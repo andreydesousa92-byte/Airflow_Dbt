@@ -1,0 +1,24 @@
+name: 'olist_transformation'
+version: '1.0.0'
+config-version: 2
+
+# Profile Conection for Cosmos
+profile: 'olist_transformation'
+
+# Where DBT will find
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+analysis-paths: ["analyses"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# How tables will be created on Postgres
+models:
+  olist_transformation:
+    # As default everything will be created as view
+    +materialized: view

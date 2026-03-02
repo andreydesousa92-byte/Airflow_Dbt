@@ -1,0 +1,29 @@
+version: 2
+
+sources:
+  - name: public
+    database: warehouse_db 
+    schema: public
+    tables:
+      - name: customers
+      - name: orders
+      - name: order_items
+      - name: payments
+      - name: reviews
+      - name: products
+      - name: sellers
+      - name: products_category
+
+models:
+  - name: orders_per_customer
+    description: "Consolidated view of orders by customer"
+    columns:
+      - name: customer_unique_id
+        description: "Unique ID"
+        tests:
+          - not_null 
+
+      - name: qty_orders
+        description: "Total Orders"
+        tests:
+          - not_null
