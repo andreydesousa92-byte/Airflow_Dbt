@@ -1,29 +1,190 @@
 version: 2
 
+# ─────────────────────────────────────────────────────────────────
+# SOURCES
+# Sources represent raw tables that exist outside dbt — in this case,
+# tables loaded directly into Postgres by the Airflow ingestion DAG.
+# Defining sources here allows dbt to:
+#   1. Track data lineage (raw → staging → mart)
+#   2. Run tests against raw tables before transformations run
+#   3. Generate documentation automatically
+# ─────────────────────────────────────────────────────────────────
 sources:
   - name: public
-    database: warehouse_db 
+    database: warehouse_db
     schema: public
     tables:
-      - name: customers
-      - name: orders
-      - name: order_items
-      - name: payments
-      - name: reviews
-      - name: products
-      - name: sellers
-      - name: products_category
 
+      - name: customers
+        description: "Raw customer data loaded from Olist CSV"
+        columns:
+          - name: customer_id
+            description: "FK used to join with orders. Not the unique customer identifier."
+            tests:
+              - not_null
+              - unique 
+          - name: customer_unique_id
+            description: "True unique identifier for a customer across multiple orders"
+            tests:
+              - not_null
+
+      - name: orders
+        description: "Raw orders data loaded from Olist CSV"
+        columns:
+          - name: order_id
+            description: "Primary key — uniquely identifies each order"
+            tests:
+              - not_null
+              - unique
+          - name: customer_id
+            description: "FK referencing customers.customer_id"
+            tests:
+              - not_null
+              - relationships: 
+                  to: source('public', 'customers')
+                  field: customer_id
+
+      - name: order_items
+        description: "Raw order items — each row is one item within an order"
+        columns:
+          - name: order_id
+            tests:
+              - not_null
+              - relationships:
+                  to: source('public', 'orders')
+                  field: order_id
+          - name: order_item_id
+            tests:
+              - not_null
+
+      - name: payments
+        description: "Raw payment data — one order can have multiple payment methods"
+        columns:
+          - name: order_id
+            tests:
+              - not_null
+              - relationships:
+                  to: source('public', 'orders')
+                  field: order_id
+          - name: payment_sequential
+            tests:
+              - not_null
+
+      - name: reviews
+        description: "Raw review data submitted by customers after delivery"
+        columns:
+          - name: review_id
+            tests:
+              - not_null
+              - unique
+          - name: order_id
+            tests:
+              - not_null
+              - relationships:
+                  to: source('public', 'orders')
+                  field: order_id
+
+      - name: products
+        description: "Raw product catalogue data"
+        columns:
+          - name: product_id
+            tests:
+              - not_null
+              - unique
+
+      - name: sellers
+        description: "Raw seller data"
+        columns:
+          - name: seller_id
+            tests:
+              - not_null
+              - unique
+
+      - name: products_category
+        description: "Translation table mapping Portuguese category names to English"
+        columns:
+          - name: product_category_name
+            tests:
+              - not_null
+              - unique
+
+# ─────────────────────────────────────────────────────────────────
+# MODELS
+# Models are the SQL transformations dbt compiles and runs.
+# Each model should have:
+#   - A description explaining its business purpose
+#   - Column descriptions
+#   - At minimum not_null and unique tests on key columns
+# ─────────────────────────────────────────────────────────────────
 models:
+  - name: stg_customers
+    description: "Cleaned and standardised customer data"
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
+      - name: customer_unique_id
+        tests:
+          - not_null
+      - name: zip_code
+        tests:
+          - not_null
+      - name: city
+        tests:
+          - not_null
+      - name: state
+        tests:
+          - not_null
+
+  - name: stg_orders
+    description: "Cleaned and type-cast orders data with delivery flag"
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+          - unique
+      - name: customer_id
+        tests:
+          - not_null
+      - name: order_status
+        tests:
+          - not_null
+      - name: is_delivered
+        tests:
+          - not_null
+      - name: purchased_at
+        tests:
+          - not_null
+      - name: approved_at
+          
+      - name: delivered_carrier_at
+          
+      - name: delivered_customer_at
+          
+      - name: estimated_delivery_at
+        tests:
+          - not_null
+
   - name: orders_per_customer
-    description: "Consolidated view of orders by customer"
+    description: "Total orders and delivery rate per unique customer"
     columns:
       - name: customer_unique_id
-        description: "Unique ID"
         tests:
-          - not_null 
-
+          - not_null
+          - unique
+      - name: city
+        tests:
+          - not_null
+      - name: state
+        tests:
+          - not_null
       - name: qty_orders
-        description: "Total Orders"
+        tests:
+          - not_null
+      - name: qty_delivered
+        tests:
+          - not_null
+      - name: pct_delivered
         tests:
           - not_null

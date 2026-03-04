@@ -1,0 +1,123 @@
+[0m20:14:21.458578 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7e00ab3d10d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7e00ab3d3aa0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7e00add74140>]}
+
+
+============================== 20:14:21.462221 | 5cf3b6f9-c537-456d-878f-d02822a0496a ==============================
+[0m20:14:21.462221 [info ] [MainThread]: Running with dbt=1.11.6
+[0m20:14:21.462961 [debug] [MainThread]: running dbt with arguments {'write_json': 'True', 'invocation_command': 'dbt build --profiles-dir /usr/local/airflow/dags/dbt/olist_transformation --project-dir /usr/local/airflow/dags/dbt/olist_transformation', 'warn_error': 'None', 'log_path': '/usr/local/airflow/dags/dbt/olist_transformation/logs', 'quiet': 'False', 'static_parser': 'True', 'fail_fast': 'False', 'use_experimental_parser': 'False', 'indirect_selection': 'eager', 'partial_parse': 'True', 'use_colors': 'True', 'cache_selected_only': 'False', 'printer_width': '80', 'profiles_dir': '/usr/local/airflow/dags/dbt/olist_transformation', 'log_cache_events': 'False', 'target_path': 'None', 'no_print': 'None', 'send_anonymous_usage_stats': 'True', 'introspect': 'True', 'log_format': 'default', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'empty': 'False', 'version_check': 'True', 'debug': 'False'}
+[0m20:14:21.467953 [error] [MainThread]: Encountered an error:
+Runtime Error
+  Could not find profile named 'olist_transformation'
+[0m20:14:21.470003 [debug] [MainThread]: Resource report: {"command_name": "build", "command_success": false, "command_wall_clock_time": 0.08456221, "process_in_blocks": "0", "process_kernel_time": 0.15963, "process_mem_max_rss": "102812", "process_out_blocks": "0", "process_user_time": 2.083174}
+[0m20:14:21.470978 [debug] [MainThread]: Command `dbt build` failed at 20:14:21.470793 after 0.09 seconds
+[0m20:14:21.471674 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7e00ac2abb60>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7e00aa5de0c0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7e00aa22e210>]}
+[0m20:14:21.472322 [debug] [MainThread]: Flushing usage events
+[0m20:14:21.871244 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m20:19:59.823670 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x73d52f1e9d60>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x73d5307e2a20>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x73d52f050da0>]}
+
+
+============================== 20:19:59.827479 | 97f11a57-69cd-4a97-a8a1-d2e701675c0b ==============================
+[0m20:19:59.827479 [info ] [MainThread]: Running with dbt=1.11.6
+[0m20:19:59.828401 [debug] [MainThread]: running dbt with arguments {'send_anonymous_usage_stats': 'True', 'empty': 'None', 'log_cache_events': 'False', 'debug': 'False', 'indirect_selection': 'eager', 'use_experimental_parser': 'False', 'target_path': 'None', 'partial_parse': 'True', 'warn_error': 'None', 'fail_fast': 'False', 'profiles_dir': '/home/astro/.dbt', 'write_json': 'True', 'static_parser': 'True', 'quiet': 'False', 'printer_width': '80', 'use_colors': 'True', 'log_format': 'default', 'no_print': 'None', 'cache_selected_only': 'False', 'invocation_command': 'dbt debug', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'version_check': 'True', 'log_path': '/usr/local/airflow/dags/dbt/olist_transformation/logs', 'introspect': 'True'}
+[0m20:19:59.856751 [info ] [MainThread]: dbt version: 1.11.6
+[0m20:19:59.857536 [info ] [MainThread]: python version: 3.12.12
+[0m20:19:59.858410 [info ] [MainThread]: python path: /usr/local/bin/python
+[0m20:19:59.859336 [info ] [MainThread]: os info: Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.36
+[0m20:19:59.860521 [info ] [MainThread]: Using profiles dir at /home/astro/.dbt
+[0m20:19:59.861600 [info ] [MainThread]: Using profiles.yml file at /home/astro/.dbt/profiles.yml
+[0m20:19:59.862407 [info ] [MainThread]: Using dbt_project.yml file at /usr/local/airflow/dags/dbt/olist_transformation/dbt_project.yml
+[0m20:19:59.971643 [info ] [MainThread]: Configuration:
+[0m20:19:59.972635 [info ] [MainThread]:   profiles.yml file [[31mERROR not found[0m]
+[0m20:19:59.973411 [info ] [MainThread]:   dbt_project.yml file [[32mOK found and valid[0m]
+[0m20:19:59.974430 [info ] [MainThread]: Required dependencies:
+[0m20:19:59.975402 [debug] [MainThread]: Executing "git --help"
+[0m20:19:59.978250 [info ] [MainThread]:  - git [[31mERROR[0m]
+
+[0m20:19:59.979001 [info ] [MainThread]: Connection test skipped since no profile was found
+[0m20:19:59.980250 [info ] [MainThread]: [31m2 checks failed:[0m
+[0m20:19:59.981462 [info ] [MainThread]: dbt looked for a profiles.yml file in /home/astro/.dbt/profiles.yml, but did
+not find one. For more information on configuring your profile, consult the
+documentation:
+
+https://docs.getdbt.com/docs/configure-your-profile
+
+
+[0m20:19:59.982394 [info ] [MainThread]: Error from git --help: Could not find command, ensure it is in the user's PATH: "git"
+
+[0m20:19:59.984310 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": false, "command_wall_clock_time": 0.23418246, "process_in_blocks": "56", "process_kernel_time": 0.131826, "process_mem_max_rss": "105584", "process_out_blocks": "0", "process_user_time": 2.284995}
+[0m20:19:59.985689 [debug] [MainThread]: Command `dbt debug` failed at 20:19:59.985461 after 0.24 seconds
+[0m20:19:59.986696 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x73d52f1e9d60>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x73d52e97fe60>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x73d52e663da0>]}
+[0m20:19:59.987791 [debug] [MainThread]: Flushing usage events
+[0m20:20:00.376104 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m20:23:05.323803 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f13aef60e60>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f13b12c6930>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f13aeb9f260>]}
+
+
+============================== 20:23:05.327370 | b0500ef1-4268-4597-8af7-15a06eb459ee ==============================
+[0m20:23:05.327370 [info ] [MainThread]: Running with dbt=1.11.6
+[0m20:23:05.328251 [debug] [MainThread]: running dbt with arguments {'fail_fast': 'False', 'invocation_command': 'dbt debug', 'static_parser': 'True', 'indirect_selection': 'eager', 'version_check': 'True', 'use_colors': 'True', 'send_anonymous_usage_stats': 'True', 'introspect': 'True', 'write_json': 'True', 'warn_error': 'None', 'profiles_dir': '/home/astro/.dbt', 'cache_selected_only': 'False', 'printer_width': '80', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'use_experimental_parser': 'False', 'log_format': 'default', 'empty': 'None', 'no_print': 'None', 'partial_parse': 'True', 'debug': 'False', 'log_path': '/usr/local/airflow/dags/dbt/olist_transformation/logs', 'log_cache_events': 'False', 'target_path': 'None', 'quiet': 'False'}
+[0m20:23:05.351812 [info ] [MainThread]: dbt version: 1.11.6
+[0m20:23:05.352965 [info ] [MainThread]: python version: 3.12.12
+[0m20:23:05.355110 [info ] [MainThread]: python path: /usr/local/bin/python
+[0m20:23:05.356349 [info ] [MainThread]: os info: Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.36
+[0m20:23:05.440165 [info ] [MainThread]: Using profiles dir at /home/astro/.dbt
+[0m20:23:05.441563 [info ] [MainThread]: Using profiles.yml file at /home/astro/.dbt/profiles.yml
+[0m20:23:05.442810 [info ] [MainThread]: Using dbt_project.yml file at /usr/local/airflow/dags/dbt/olist_transformation/dbt_project.yml
+[0m20:23:05.445268 [info ] [MainThread]: adapter type: postgres
+[0m20:23:05.446285 [info ] [MainThread]: adapter version: 1.10.0
+[0m20:23:05.567963 [info ] [MainThread]: Configuration:
+[0m20:23:05.568943 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m20:23:05.569606 [info ] [MainThread]:   dbt_project.yml file [[32mOK found and valid[0m]
+[0m20:23:05.570433 [info ] [MainThread]: Required dependencies:
+[0m20:23:05.571199 [debug] [MainThread]: Executing "git --help"
+[0m20:23:05.573324 [info ] [MainThread]:  - git [[31mERROR[0m]
+
+[0m20:23:05.574055 [info ] [MainThread]: Connection:
+[0m20:23:05.575001 [info ] [MainThread]:   host: postgres_warehouse
+[0m20:23:05.576285 [info ] [MainThread]:   port: 5432
+[0m20:23:05.577548 [info ] [MainThread]:   user: postgres
+[0m20:23:05.578603 [info ] [MainThread]:   database: warehouse_db
+[0m20:23:05.579507 [info ] [MainThread]:   schema: public
+[0m20:23:05.580631 [info ] [MainThread]:   connect_timeout: 10
+[0m20:23:05.581669 [info ] [MainThread]:   role: None
+[0m20:23:05.582730 [info ] [MainThread]:   search_path: None
+[0m20:23:05.584543 [info ] [MainThread]:   keepalives_idle: 0
+[0m20:23:05.586243 [info ] [MainThread]:   sslmode: None
+[0m20:23:05.587289 [info ] [MainThread]:   sslcert: None
+[0m20:23:05.588405 [info ] [MainThread]:   sslkey: None
+[0m20:23:05.589379 [info ] [MainThread]:   sslrootcert: None
+[0m20:23:05.590346 [info ] [MainThread]:   application_name: dbt
+[0m20:23:05.591381 [info ] [MainThread]:   retries: 1
+[0m20:23:05.592604 [info ] [MainThread]: Registered adapter: postgres=1.10.0
+[0m20:23:05.671208 [debug] [MainThread]: Acquiring new postgres connection 'debug'
+[0m20:23:05.717551 [debug] [MainThread]: Using postgres connection "debug"
+[0m20:23:05.718794 [debug] [MainThread]: On debug: select 1 as id
+[0m20:23:05.719794 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m20:23:08.268522 [debug] [MainThread]: Postgres adapter: Got a retryable error when attempting to open a postgres connection.
+1 attempts remaining. Retrying in 0 seconds.
+Error:
+could not translate host name "postgres_warehouse" to address: Name or service not known
+
+[0m20:23:10.550653 [debug] [MainThread]: Postgres adapter: Error running SQL: select 1 as id
+[0m20:23:10.551314 [debug] [MainThread]: Postgres adapter: Rolling back transaction.
+[0m20:23:10.551886 [debug] [MainThread]: On debug: No close available on handle
+[0m20:23:10.552320 [info ] [MainThread]:   Connection test: [[31mERROR[0m]
+
+[0m20:23:10.552905 [info ] [MainThread]: [31m2 checks failed:[0m
+[0m20:23:10.553731 [info ] [MainThread]: Error from git --help: Could not find command, ensure it is in the user's PATH: "git"
+
+[0m20:23:10.555020 [info ] [MainThread]: dbt was unable to connect to the specified database.
+The database returned the following error:
+
+  >Database Error
+  could not translate host name "postgres_warehouse" to address: Name or service not known
+  
+
+Check your database credentials and try again. For more information, visit:
+https://docs.getdbt.com/docs/configure-your-profile
+
+
+[0m20:23:10.557636 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": false, "command_wall_clock_time": 5.3127193, "process_in_blocks": "0", "process_kernel_time": 0.308673, "process_mem_max_rss": "114640", "process_out_blocks": "8", "process_user_time": 2.673836}
+[0m20:23:10.558759 [debug] [MainThread]: Command `dbt debug` failed at 20:23:10.558533 after 5.31 seconds
+[0m20:23:10.559586 [debug] [MainThread]: Connection 'debug' was properly closed.
+[0m20:23:10.560547 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f13af7a00e0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f13add5bef0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f13af0569c0>]}
+[0m20:23:10.561605 [debug] [MainThread]: Flushing usage events
+[0m20:23:10.949069 [debug] [MainThread]: An error was encountered while trying to flush usage events
