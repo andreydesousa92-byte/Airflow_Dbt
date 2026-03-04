@@ -21,7 +21,7 @@ with DAG(
         # TABLE CUSTOMERS
         # -------------------------------
         cur.execute("""
-        DROP TABLE IF EXISTS customers;
+        DROP TABLE IF EXISTS customers CASCADE;
         CREATE TABLE customers (
             customer_id VARCHAR PRIMARY KEY,
             customer_unique_id VARCHAR,
@@ -35,7 +35,7 @@ with DAG(
         # TABLE ORDERS
         # -------------------------------
         cur.execute("""
-        DROP TABLE IF EXISTS orders;
+        DROP TABLE IF EXISTS orders CASCADE;
         CREATE TABLE orders (
             order_id VARCHAR PRIMARY KEY,
             customer_id VARCHAR REFERENCES customers(customer_id),
@@ -52,7 +52,7 @@ with DAG(
         # TABLE ORDER_ITEMS
         # -------------------------------
         cur.execute("""
-        DROP TABLE IF EXISTS order_items;
+        DROP TABLE IF EXISTS order_items CASCADE;
         CREATE TABLE order_items (
             order_id VARCHAR REFERENCES orders(order_id),
             order_item_id INT,
@@ -69,7 +69,7 @@ with DAG(
         # TABLE PAYMENTS
         # -------------------------------
         cur.execute("""
-        DROP TABLE IF EXISTS payments;
+        DROP TABLE IF EXISTS payments CASCADE;
         CREATE TABLE payments (
             order_id VARCHAR REFERENCES orders(order_id),
             payment_sequential INT,
@@ -84,7 +84,7 @@ with DAG(
         # TABLE REVIEWS
         # -------------------------------
         cur.execute("""
-        DROP TABLE IF EXISTS reviews;
+        DROP TABLE IF EXISTS reviews CASCADE;
         CREATE TABLE reviews (
             review_id VARCHAR PRIMARY KEY,
             order_id VARCHAR REFERENCES orders(order_id),
@@ -100,7 +100,7 @@ with DAG(
         # TABLE PRODUCTS
         # -------------------------------
         cur.execute("""
-        DROP TABLE IF EXISTS products;
+        DROP TABLE IF EXISTS products CASCADE;
         CREATE TABLE products (
             product_id VARCHAR PRIMARY KEY,
             product_category_name VARCHAR,
@@ -118,7 +118,7 @@ with DAG(
         # TABLE SELLERS
         # -------------------------------
         cur.execute("""
-        DROP TABLE IF EXISTS sellers;
+        DROP TABLE IF EXISTS sellers CASCADE;
         CREATE TABLE sellers (
             seller_id VARCHAR PRIMARY KEY,
             seller_zip_code_prefix INT,
@@ -131,7 +131,7 @@ with DAG(
         # TABLE PRODUCTS CATEGORY
         # -------------------------------
         cur.execute("""
-        DROP TABLE IF EXISTS products_category;
+        DROP TABLE IF EXISTS products_category CASCADE;
         CREATE TABLE products_category (
             product_category_name VARCHAR PRIMARY KEY,
             product_category_name_english VARCHAR
