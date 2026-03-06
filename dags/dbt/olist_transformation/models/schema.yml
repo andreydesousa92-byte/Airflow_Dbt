@@ -166,6 +166,96 @@ models:
         tests:
           - not_null
 
+  - name: stg_order_items
+    description: "Cleaned order items data"
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+      - name: order_item_id
+        tests:
+          - not_null
+      - name: product_id
+        tests:
+          - not_null
+      - name: seller_id
+        tests:
+          - not_null
+      - name: price
+        tests:
+          - not_null
+      - name: freight_value
+        tests:
+          - not_null
+
+  - name: stg_payments
+    description: "Cleaned payments data"
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+      - name: payment_sequential
+        tests:
+          - not_null
+      - name: payment_type
+        tests:
+          - not_null
+      - name: payment_value
+        tests:
+          - not_null
+
+  - name: stg_reviews
+    description: "Cleaned reviews data"
+    columns:
+      - name: review_id
+        tests:
+          - not_null
+          - unique
+      - name: order_id
+        tests:
+          - not_null
+      - name: review_score
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1, 2, 3, 4, 5]
+
+  - name: stg_products
+    description: "Cleaned products data"
+    columns:
+      - name: product_id
+        tests:
+          - not_null
+          - unique
+      - name: category_name
+        tests:
+          - not_null
+
+  - name: stg_sellers
+    description: "Cleaned sellers data"
+    columns:
+      - name: seller_id
+        tests:
+          - not_null
+          - unique
+      - name: city
+        tests:
+          - not_null
+      - name: state
+        tests:
+          - not_null
+
+  - name: stg_products_category
+    description: "Product category translation table"
+    columns:
+      - name: category_name
+        tests:
+          - not_null
+          - unique
+      - name: category_name_english
+        tests:
+          - not_null
+
   - name: orders_per_customer
     description: "Total orders and delivery rate per unique customer"
     columns:
@@ -186,5 +276,36 @@ models:
         tests:
           - not_null
       - name: pct_delivered
+        tests:
+          - not_null
+  
+  - name: delivery_performance
+    description: "Delivery performance with on-time rate and lead times per location"
+    columns:
+      - name: state
+        tests:
+          - not_null
+      - name: city
+        tests:
+          - not_null
+      - name: qty_orders
+        tests:
+          - not_null
+      - name: avg_days_to_approval
+        tests:
+          - not_null
+      - name: avg_days_approval_to_carrier
+        tests:
+          - not_null
+      - name: avg_days_carrier_to_customer
+        tests:
+          - not_null
+      - name: avg_days_total
+        tests:
+          - not_null
+      - name: avg_days_vs_estimate
+        tests:
+          - not_null
+      - name: pct_on_time
         tests:
           - not_null
