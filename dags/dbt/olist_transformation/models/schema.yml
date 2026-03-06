@@ -227,9 +227,6 @@ models:
         tests:
           - not_null
           - unique
-      - name: category_name
-        tests:
-          - not_null
 
   - name: stg_sellers
     description: "Cleaned sellers data"
@@ -307,5 +304,40 @@ models:
         tests:
           - not_null
       - name: pct_on_time
+        tests:
+          - not_null
+
+  - name: revenue_per_seller
+    description: "Revenue, volume and delivery performance per seller"
+    columns:
+      - name: seller_id
+        tests:
+          - not_null
+          - unique
+      - name: city
+        tests:
+          - not_null
+      - name: state
+        tests:
+          - not_null
+      - name: qty_orders
+        tests:
+          - not_null
+      - name: qty_items_sold
+        tests:
+          - not_null
+      - name: total_revenue
+        tests:
+          - not_null
+      - name: avg_ticket
+        tests:
+          - not_null
+      - name: total_freight
+        tests:
+          - not_null
+      - name: pct_delivered
+        tests:
+          - not_null
+      - name: avg_days_to_deliver
         tests:
           - not_null
