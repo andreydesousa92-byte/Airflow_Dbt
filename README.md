@@ -1,45 +1,171 @@
-Overview
-========
+# Analytics Engineering Pipeline — Olist
 
-Welcome to Astronomer! This project was generated after you ran 'astro dev init' using the Astronomer CLI. This readme describes the contents of the project, as well as how to run Apache Airflow on your local machine.
+A production-grade data pipeline built with **Apache Airflow**, **dbt**, and **Docker**, using the public [Olist Brazilian E-Commerce dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) as the data source.
 
-Project Contents
-================
+The project demonstrates end-to-end analytics engineering practices: reliable ingestion, layered transformations, automated data quality testing, and full pipeline orchestration.
 
-Your Astro project contains the following files and folders:
+---
 
-- dags: This folder contains the Python files for your Airflow DAGs. By default, this directory includes one example DAG:
-    - `example_astronauts`: This DAG shows a simple ETL pipeline example that queries the list of astronauts currently in space from the Open Notify API and prints a statement for each astronaut. The DAG uses the TaskFlow API to define tasks in Python, and dynamic task mapping to dynamically print a statement for each astronaut. For more on how this DAG works, see our [Getting started tutorial](https://www.astronomer.io/docs/learn/get-started-with-airflow).
-- Dockerfile: This file contains a versioned Astro Runtime Docker image that provides a differentiated Airflow experience. If you want to execute other commands or overrides at runtime, specify them here.
-- include: This folder contains any additional files that you want to include as part of your project. It is empty by default.
-- packages.txt: Install OS-level packages needed for your project by adding them to this file. It is empty by default.
-- requirements.txt: Install Python packages needed for your project by adding them to this file. It is empty by default.
-- plugins: Add custom or community plugins for your project to this file. It is empty by default.
-- airflow_settings.yaml: Use this local-only file to specify Airflow Connections, Variables, and Pools instead of entering them in the Airflow UI as you develop DAGs in this project.
+## Architecture
 
-Deploy Your Project Locally
-===========================
+```
+CSV Files
+   ↓
+Airflow — Ingestion DAGs
+   ↓
+Postgres — Raw Warehouse
+   ↓
+dbt via Cosmos — Transformation
+   ├── Staging Layer
+   └── Mart Layer
+        ↓
+   Analytics-ready tables
+```
 
-Start Airflow on your local machine by running 'astro dev start'.
+---
 
-This command will spin up five Docker containers on your machine, each for a different Airflow component:
+## Stack
 
-- Postgres: Airflow's Metadata Database
-- Scheduler: The Airflow component responsible for monitoring and triggering tasks
-- DAG Processor: The Airflow component responsible for parsing DAGs
-- API Server: The Airflow component responsible for serving the Airflow UI and API
-- Triggerer: The Airflow component responsible for triggering deferred tasks
+| Layer | Tool |
+|---|---|
+| Orchestration | Apache Airflow (Astronomer Runtime) |
+| Containerisation | Docker + Astro CLI |
+| Transformation | dbt (data build tool) |
+| dbt-Airflow Integration | Astronomer Cosmos |
+| Warehouse | PostgreSQL |
 
-When all five containers are ready the command will open the browser to the Airflow UI at http://localhost:8080/. You should also be able to access your Postgres Database at 'localhost:5432/postgres' with username 'postgres' and password 'postgres'.
+---
 
-Note: If you already have either of the above ports allocated, you can either [stop your existing Docker containers or change the port](https://www.astronomer.io/docs/astro/cli/troubleshoot-locally#ports-are-not-available-for-my-local-airflow-webserver).
+## Project Structure
 
-Deploy Your Project to Astronomer
-=================================
+```
+├── dags/
+│   ├── warehouse_setup.py          # One-time raw table creation
+│   ├── warehouse_ingest.py         # CSV ingestion DAG
+│   ├── dbt_analytics.py            # Cosmos DAG — dbt orchestration
+│   └── dbt/
+│       └── olist_transformation/
+│           ├── dbt_project.yml
+│           ├── models/
+│           │   ├── staging/
+│           │   │   ├── stg_customers.sql
+│           │   │   ├── stg_orders.sql
+│           │   │   ├── stg_order_items.sql
+│           │   │   ├── stg_payments.sql
+│           │   │   ├── stg_reviews.sql
+│           │   │   ├── stg_products.sql
+│           │   │   ├── stg_sellers.sql
+│           │   │   └── stg_products_category.sql
+│           │   └── marts/
+│           │       ├── orders_per_customer.sql
+│           │       ├── delivery_performance.sql
+│           │       └── revenue_per_seller.sql
+│           └── schema.yml
+├── include/
+│   └── dataset/                    # Olist CSV files
+├── Dockerfile
+├── docker-compose.override.yml
+├── requirements.txt
+└── packages.txt
+```
 
-If you have an Astronomer account, pushing code to a Deployment on Astronomer is simple. For deploying instructions, refer to Astronomer documentation: https://www.astronomer.io/docs/astro/deploy-code/
+---
 
-Contact
-=======
+## Pipeline Detail
 
-The Astronomer CLI is maintained with love by the Astronomer team. To report a bug or suggest a change, reach out to our support.
+### Ingestion
+
+Each CSV file is ingested as an **independent Airflow task** — failures are isolated and retried individually without reprocessing the entire pipeline.
+
+The ingestion uses a **staging table + upsert pattern**:
+
+1. Data is bulk-loaded into a temporary staging table via Postgres's native `COPY` command
+2. Duplicates are removed using `DISTINCT ON`
+3. Data is upserted into the final table using `ON CONFLICT`
+
+This makes every run fully **idempotent** — safe to re-run without duplicating data. Task dependencies mirror the foreign key relationships in the schema, ensuring referential integrity during parallel execution.
+
+### Transformation
+
+All transformations are handled by **dbt**, integrated into Airflow via **Cosmos** — which automatically converts each dbt model into an Airflow task, preserving model dependencies as task dependencies in the DAG graph.
+
+#### Staging Layer
+
+One model per source table. No joins or business logic — only cleaning and standardisation:
+
+- Column renaming for consistency
+- Explicit type casting
+- Value normalisation (e.g. uppercasing city names)
+
+All models reference raw tables via dbt's `source()` macro and are consumed downstream via `ref()`, enabling full lineage tracking.
+
+#### Mart Layer
+
+Business-oriented models built on top of staging, computing aggregated metrics ready for analytical consumption.
+
+| Model | Description |
+|---|---|
+| `orders_per_customer` | Order volume and delivery rate per unique customer |
+| `delivery_performance` | Lead times and on-time delivery rate per city and state |
+| `revenue_per_seller` | Revenue, ticket size, and delivery performance per seller |
+
+### Data Quality
+
+Every model is covered by automated dbt tests defined in `schema.yml`:
+
+| Test | Description |
+|---|---|
+| `not_null` | Ensures critical columns never contain null values |
+| `unique` | Ensures primary keys are never duplicated |
+| `accepted_values` | Validates categorical columns against allowed values |
+| `relationships` | Validates referential integrity between models |
+
+**47 automated tests** run across all models. A failed test blocks every downstream model from executing — the pipeline breaks loudly, not silently.
+
+---
+
+## How to Run
+
+### Prerequisites
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [Astro CLI](https://www.astronomer.io/docs/astro/cli/install-cli)
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/andreydesousa92-byte/Airflow_Dbt
+cd Airflow_Dbt
+
+# Start the Airflow environment
+astro dev start
+```
+
+Access the Airflow UI at `http://localhost:8080`
+
+### Running the Pipeline
+
+Run the DAGs in the following order:
+
+1. `setup_olist_warehouse` — creates the raw tables (run once)
+2. `ingest_olist_csvs` — loads all CSV files into Postgres
+3. `dbt_analytics_olist` — runs all dbt models and tests
+
+---
+
+## Key Engineering Decisions
+
+**Independent tasks per table** — rather than ingesting all CSVs in a single function, each table is an independent Airflow task. This enables granular retries, parallel execution, and clear visibility in the Airflow UI.
+
+**Idempotent upsert pattern** — the staging + upsert approach ensures the pipeline can be re-run at any time without data corruption, which is critical in production environments where retries are inevitable.
+
+**Separation of concerns across dbt layers** — staging models never contain business logic; mart models never touch raw sources directly. This makes the pipeline easier to maintain, test, and extend.
+
+**Tests at every layer** — source tables, staging models, and marts are all tested. Data quality issues are caught at the earliest possible point in the pipeline.
+
+---
+
+## Dataset
+
+[Olist Brazilian E-Commerce](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) — a real commercial dataset containing 100k orders from 2016 to 2018, including orders, products, sellers, customers, payments, and reviews.
